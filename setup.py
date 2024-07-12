@@ -85,6 +85,7 @@ NO_TS = False
 LEGACY = False
 RELEASE = False
 CI_BUILD = False
+MAKEFILE = False
 
 if "--fx-only" in sys.argv:
     PY_ONLY = True

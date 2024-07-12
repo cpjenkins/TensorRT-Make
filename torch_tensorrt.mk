@@ -86,43 +86,12 @@ LDFLAGS := -lstdc++fs -Wl,--no-as-needed -ldl -lrt -Wl,--as-needed -lm -lpthread
 
 all: $(TARBALL)
 
-
 .PHONY: clean
 clean:
 	@find . -name "*.a" -delete
 	@find . -name "*.o" -delete
 	@find . -name "*.so" -delete
 	@find . -name "*.whl" -delete
-
-.PHONY: src-dist
-src-dist: clean
-	@rm -rf /tmp/Torch-TensorRT-$(VERSION)
-	@mkdir /tmp/Torch-TensorRT-$(VERSION) && \
-    cp -r core/ cpp/ py/ Makefile LICENSE /tmp/Torch-TensorRT-$(VERSION)/ && \
-    cd /tmp && tar czf Torch-TensorRT-$(VERSION).tar.gz Torch-TensorRT-$(VERSION) && \
-    cd - && mv /tmp/Torch-TensorRT-$(VERSION).tar.gz .
-
-
-.PHONY: install
-install: $(TARGETS)
-	@echo " ▸ [DIST] install"
-	@mkdir -p $(BAZEL_BIN) >& /dev/null
-	@rm -rf bazel-Torch-TensorRT
-	@mkdir -p bazel-Torch-TensorRT/external >& /dev/null
-	@ln -s $(NVINFER_BASE) bazel-Torch-TensorRT/external/tensorrt
-	@mkdir -p py/torch_tensorrt/lib/ && cp $(BUILD_DIR)/libtorchtrt.so py/torch_tensorrt/lib/
-	@cd py && $(PYTHON) setup.py install $(WHEEL_OPTS)
-
-.PHONY: wheel
-wheel: $(TARGETS)
-	@echo " ▸ [DIST] bdist_wheel"
-	@mkdir -p $(BAZEL_BIN) >& /dev/null
-	@rm -rf bazel-Torch-TensorRT
-	@mkdir -p bazel-Torch-TensorRT/external >& /dev/null
-	@ln -s $(NVINFER_BASE) bazel-Torch-TensorRT/external/tensorrt
-	@mkdir -p py/torch_tensorrt/lib/ && cp $(BUILD_DIR)/libtorchtrt.so py/torch_tensorrt/lib/
-	@cd py && $(PYTHON) setup.py bdist_wheel $(WHEEL_OPTS)
-	@mv py/dist/*.whl $(BUILD_DIR)
 
 $(TARBALL): $(TARGETS)
 	@echo $(TARBALL)
